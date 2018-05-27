@@ -16,13 +16,3 @@ download: micropython-lib
 
 micropython-lib:
 	git clone https://github.com/micropython/micropython-lib
-
-install-button:
-	ampy put main-button.py main.py
-	ampy put luke
-	ampy put luke/defs.py luke/defs.py
-	ampy put luke/client.py luke/client.py
-	ampy put micropython-lib/umqtt.simple/umqtt
-
-
-
