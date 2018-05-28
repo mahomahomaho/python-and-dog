@@ -9,9 +9,11 @@ SSID="SOME_NET"
 PASS="some_pass"
 
 NUM_MOVES_PER_DOSE = 1
-POS_LEFT = 0
-POS_RIGHT = 1
-OPEN_TIME = 0.5
+TURN_FROM = 0.0
+TURN_TO = 0.9
+TURN_FORWARD=0.3
+TURN_BACK=0.1
+SERVO_PIN = 19
 
 try:
     from config_local import *
