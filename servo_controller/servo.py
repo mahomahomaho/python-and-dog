@@ -9,14 +9,7 @@ class Servo:
         self.pwm.freq(50)
         self.pwm.duty(0)
 
-    def speed(self, speed):
-
-        if speed == 0:
-            self.pwm.duty(0)
-            return
-
-        duty = 22 + int(speed * 21)
-        duty = max(min(duty, 42), 1)
+    def set(self, pos):
+        duty = int(40 + (115-40)*pos)
         self.pwm.duty(duty)
-
 

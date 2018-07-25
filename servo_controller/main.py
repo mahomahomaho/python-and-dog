@@ -12,12 +12,12 @@ servo = None
 
 
 servo = Servo(config.SERVO_PIN)
-adcs = [ADC(Pin(x)) for x in config.ADAC_PINS]
-    
+adc = ADC(Pin(config.ADAC_PIN))
+
 while True:
     sleep(0.1)
-    v1, v2 = [x.read() for x in adcs]
-    v =  0.53 * (v1 + v2*7.0) / 1960.0
+    v = adc.read()/4096
     print("v=", v)
-    servo.speed(config.NEUTRAL_V - v)
+    servo.set(v)
+    # servo.speed((v - config.NEUTRAL_V)*(config.MAX_V - config.NEUTRAL_V))
 

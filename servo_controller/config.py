@@ -5,8 +5,8 @@ OTA = {'SSID': 'SSID',
        'node_type': 'scontrol'}
 
 SERVO_PIN = 19
-ADAC_PINS = (35, 36)
-NEUTRAL_V = 1.5
+ADAC_PIN = 32
+NEUTRAL_V = 0.5
 
 try:
     from config_local import *

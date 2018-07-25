@@ -1,5 +1,6 @@
 
 OTACLIDIR=../../micropython-OTA/otacli
+OTASERV=$(OTACLIDIR)/../otaserv/otaserv.sh
 PORT=/dev/ttyUSB0
 export AMPY_PORT=$(PORT)
 
@@ -18,3 +19,7 @@ smallinstall:
 
 otacli.py: $(OTACLIDIR)/otacli.py
 	cp $(OTACLIDIR)/otacli.py ./
+
+serve: otacli.py
+	$(OTASERV)
+
