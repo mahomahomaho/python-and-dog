@@ -26,7 +26,10 @@ def url_open(url):
         fatal("Unable to resolve %s:%s (no Internet?)" % host, port,  e)
     
     try:
+        s.settimeout(10)
         s.connect(ai[0][-1])
+        # s.settimeout(None)
+        print("after connect")
 
         # MicroPython rawsocket module supports file interface directly
         s.write("GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n" % (urlpath, host))

@@ -8,22 +8,15 @@ class Servo:
         self.pwm = machine.PWM(self.pin)
         self.pwm.freq(50)
         self.pwm.duty(0)
-        self.pos = None
 
-    def set(self, pos):
-        ftime = 1.0
-        if self.pos is None:
-            sleeptime = ftime
-        else:
-            sleeptime = ftime * abs(pos - self.pos)
-        self.pos = pos
+    def speed(self, speed):
 
-        duty = int(40 + (115-40)*pos)
+        if speed == 0:
+            self.pwm.duty(0)
+            return
+
+        duty = 22 + int(speed * 21)
+        duty = max(min(duty, 42), 1)
         self.pwm.duty(duty)
-
-        print("sleeptime", sleeptime)
-
-        time.sleep(sleeptime)
-        self.pwm.duty(0)
 
 
