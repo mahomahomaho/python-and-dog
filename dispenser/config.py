@@ -4,13 +4,15 @@ OTA = {'SSID': 'SSID',
        'bind_ip': '10.11.12.1',
        'node_type': 'dispenser'}
 
-BROKER="dlaptop.lan"
-SSID="SOME_NET"
-PASS="some_pass"
+AP_SSID="dispenser"
+AP_PASS="dispenser_pass"
+AP_IP="192.168.4.10"
 
 SERVO_PIN = 19
 TURN_SPEED = 0.2
 TURN_TIME = 3
+
+LISTEN_PORT = 2477
 
 try:
     from config_local import *

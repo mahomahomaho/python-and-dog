@@ -1,8 +1,8 @@
 import network
+import usocket
+
 from time import sleep
 from servo import Servo
-
-from umqtt.simple import MQTTClient
 
 import otacli
 import config
@@ -28,31 +28,33 @@ def sub_cb(topic, msg):
         print("set duty to %s" % msg)
         servo.pwm.duty(int(msg.decode()))
 
-
-print('WIFI connecting')
-station = network.WLAN(network.STA_IF)
+print("CREATE WIFI AP")
+station = network.WLAN(network.AP_IF)
 station.active(True)
-station.connect(config.SSID, config.PASS)
+# station.connect(config.SSID, config.PASS)
+station.config(essid=config.AP_SSID)
+station.config(authmode=3, password=config.AP_PASS)
+ifconfig = station.ifconfig()
+station.ifconfig((config.AP_IP, "255.255.255.0", ifconfig[2], ifconfig[3]))
+print("IP IS SET")
 
-while not station.isconnected():
-    print("not connected to wifi")
-    sleep(1)
+socket = usocket.socket()
+print("A")
+socket.bind(usocket.getaddrinfo(config.AP_IP, config.LISTEN_PORT))
+print("B")
+socket.listen()
+print("C")
 
-print("connect to broker")
-c = MQTTClient("dispenser", config.BROKER)
+while True:
+    x = socket.accept()
+    print("after ACCEPT x=%s" % x)
 
-c.set_callback(sub_cb)
-c.connect()
-    
-c.subscribe("dispenser")
-c.subscribe("duty")
-c.subscribe("speed")
 
-servo = Servo(config.SERVO_PIN)
-    
-try:
-    while True:
-        c.wait_msg()
-finally:
-    c.disconnect()
-
+# servo = Servo(config.SERVO_PIN)
+#     
+# try:
+#     while True:
+#         c.wait_msg()
+# finally:
+#     c.disconnect()
+# 

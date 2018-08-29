@@ -6,10 +6,13 @@ export AMPY_PORT=$(PORT)
 install: otacli.py
 	make -C .. download
 	make smallinstall
-	ampy put ../micropython-lib/umqtt.simple/umqtt
 	ampy put ../micropython-lib/utarfile/utarfile.py
 	ampy put ../micropython-lib/os.path/os/path.py ospath.py
 	ampy put otacli.py
+
+minicom:
+	make install
+	minicom -D $(PORT)
 
 smallinstall:
 	ampy put main.py
