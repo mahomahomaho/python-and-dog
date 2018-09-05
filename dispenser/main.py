@@ -12,49 +12,58 @@ if otacli.check():
 
 servo = None
 
-def sub_cb(topic, msg):
+def handle(msg):
     global servo
+    if not servo:
+        servo = Servo(config.SERVO_PIN)
 
-    if msg == b"treat":
+    if msg == "treat":
         servo.speed(config.TURN_SPEED)
         sleep(config.TURN_TIME)
         servo.speed(0)
 
-    if topic == b"speed":
-        print("set speed to %s" % msg)
-        servo.speed(float(msg.decode())/100)
+        return "OK"
     
-    if topic == b"duty":
-        print("set duty to %s" % msg)
-        servo.pwm.duty(int(msg.decode()))
+    raise Exception("unknown order: %s" % msg)
+
+    # if msg.startswith("speed"):
+    #     print("set speed to %s" % msg)
+    #     servo.speed(float(msg.decode())/100)
+
+    # if topic == b"duty":
+    #     print("set duty to %s" % msg)
+    #     servo.pwm.duty(int(msg.decode()))
+
 
 print("CREATE WIFI AP")
 station = network.WLAN(network.AP_IF)
 station.active(True)
-# station.connect(config.SSID, config.PASS)
-station.config(essid=config.AP_SSID)
-station.config(authmode=3, password=config.AP_PASS)
+station.config(essid=config.AP_SSID, authmode=3, password=config.AP_PASS)
 ifconfig = station.ifconfig()
-station.ifconfig((config.AP_IP, "255.255.255.0", ifconfig[2], ifconfig[3]))
+station.ifconfig((config.AP_IP, "255.255.255.0", ifconfig[2], config.AP_DNS))
 print("IP IS SET")
 
 socket = usocket.socket()
 print("A")
-socket.bind(usocket.getaddrinfo(config.AP_IP, config.LISTEN_PORT))
+addr = ('0.0.0.0', config.LISTEN_PORT)
+print("AA")
+socket.bind(addr)
 print("B")
-socket.listen()
+socket.listen(5)
 print("C")
 
 while True:
-    x = socket.accept()
-    print("after ACCEPT x=%s" % x)
+    conn, addr = socket.accept()
+    
+    print("conencted by ", addr)
+    while True:
+        data = conn.recv(1024)
+        if not data:
+            break
 
+        data = data.strip().decode('utf-8')
 
-# servo = Servo(config.SERVO_PIN)
-#     
-# try:
-#     while True:
-#         c.wait_msg()
-# finally:
-#     c.disconnect()
-# 
+        try:
+            conn.send("RETURNED %s\n\n" % handle(data))
+        except Exception as e:
+            conn.send("Could not handle '%s': %s\n\n" % (data, e))

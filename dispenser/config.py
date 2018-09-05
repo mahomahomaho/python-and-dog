@@ -7,6 +7,7 @@ OTA = {'SSID': 'SSID',
 AP_SSID="dispenser"
 AP_PASS="dispenser_pass"
 AP_IP="192.168.4.10"
+AP_DNS='8.8.8.8'
 
 SERVO_PIN = 19
 TURN_SPEED = 0.2

@@ -2,3 +2,4 @@ micropython-lib
 config_local.py
 .*.swp
 .ve*
+dispenser/otacli.py
