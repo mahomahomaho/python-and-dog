@@ -14,8 +14,6 @@ servo = None
 
 def handle(msg):
     global servo
-    if not servo:
-        servo = Servo(config.SERVO_PIN)
 
     if msg == "treat":
         servo.speed(config.TURN_SPEED)
@@ -52,6 +50,10 @@ print("B")
 socket.listen(5)
 print("C")
 
+print("run servo")
+servo = Servo(config.SERVO_PIN)
+
+print("listen up")
 while True:
     conn, addr = socket.accept()
     
