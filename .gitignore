@@ -3,3 +3,6 @@ config_local.py
 .*.swp
 .ve*
 dispenser/otacli.py
+.buildozer
+__pycache__
+tags

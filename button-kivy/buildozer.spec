@@ -85,7 +85,7 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (list) Permissions
-#android.permissions = INTERNET
+android.permissions = INTERNET
 
 # (int) Android API to use
 #android.api = 19
@@ -235,7 +235,7 @@ log_level = 1
 warn_on_root = 1
 
 # (str) Path to build artifact storage, absolute or relative to spec file
-# build_dir = ./.buildozer
+build_dir = /home/buildozer/.build-dir
 
 # (str) Path to build output (i.e. .apk, .ipa) storage
 # bin_dir = ./bin
