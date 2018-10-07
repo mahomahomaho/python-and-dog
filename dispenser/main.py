@@ -14,6 +14,7 @@ servo = None
 
 def handle(msg):
     global servo
+    print("got order:", msg)
 
     if msg == "treat":
         servo.speed(config.TURN_SPEED)
@@ -36,10 +37,12 @@ def handle(msg):
 print("CREATE WIFI AP")
 station = network.WLAN(network.AP_IF)
 station.active(True)
-station.config(essid=config.AP_SSID, authmode=3, password=config.AP_PASS)
+station.config(essid=config.AP_SSID)
+station.config(authmode=network.AUTH_WPA_WPA2_PSK, password=config.AP_PASS)
 ifconfig = station.ifconfig()
+print("Ifconfig is ", ifconfig)
 station.ifconfig((config.AP_IP, "255.255.255.0", ifconfig[2], config.AP_DNS))
-print("IP IS SET")
+print("IP IS SET to ", config.AP_IP)
 
 socket = usocket.socket()
 print("A")
@@ -59,8 +62,12 @@ while True:
     
     print("conencted by ", addr)
     while True:
-        data = conn.recv(1024)
-        if not data:
+        try:
+            data = conn.recv(1024)
+            if not data:
+                break
+        except OSError as e:
+            print("received OSError: ", e)
             break
 
         data = data.strip().decode('utf-8')
@@ -69,3 +76,5 @@ while True:
             conn.send("RETURNED %s\n\n" % handle(data))
         except Exception as e:
             conn.send("Could not handle '%s': %s\n\n" % (data, e))
+
+    conn.close()

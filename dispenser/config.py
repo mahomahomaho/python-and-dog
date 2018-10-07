@@ -5,13 +5,13 @@ OTA = {'SSID': 'SSID',
        'node_type': 'dispenser'}
 
 AP_SSID="dispenser"
-AP_PASS="dispenser_pass"
+AP_PASS="dupadupa"
 AP_IP="192.168.4.10"
 AP_DNS='8.8.8.8'
 
 SERVO_PIN = 19
-TURN_SPEED = 0.2
-TURN_TIME = 3
+TURN_SPEED = 0.7
+TURN_TIME = 0.5
 
 LISTEN_PORT = 2477
 
