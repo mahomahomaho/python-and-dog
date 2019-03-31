@@ -4,6 +4,7 @@ import os
 import time
 
 import ospath
+import uselect
 import usocket
 import utarfile
 
@@ -17,6 +18,8 @@ def blink(msg=None, static={'v': 0}):
     if msg:
         print(msg)
 
+class CheckTimeoutError(Exception):
+    pass
 
 
 def url_open(url):
@@ -36,11 +39,29 @@ def url_open(url):
         fatal("Unable to resolve %s:%s (no Internet?)" % host, port,  e)
     
     try:
-        s.settimeout(10)
-        s.connect(ai[0][-1])
-        # s.settimeout(None)
-        print("after connect")
 
+        print("set noblocking")
+        s.setblocking(False)
+
+        # poller = uselect.poll()
+        # poller.register(s, uselect.POLLIN)
+
+        try:
+            err = s.connect(ai[0][-1])
+            print("after connect, err=%s" % err )
+        except OSError as e:
+            print("Catched OSError", e)
+            if e.args[0] != 115:  # EINPROGRESS
+                raise
+
+            print("EINPROGRESS, good")
+
+        __, ssocks, __ = uselect.select([], [s], [], 3)  # wait only three seconds for connecting to repo
+
+        if not ssocks:
+            raise CheckTimeoutError("could not connect")
+
+        s.setblocking(True)
         # MicroPython rawsocket module supports file interface directly
         s.write("GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n" % (urlpath, host))
         l = s.readline()
@@ -56,6 +77,9 @@ def url_open(url):
             if l == b'\r\n':
                 break
     except Exception as e:
+        print("Exception in url_open", e)
+        import sys
+        sys.print_exception(e)
         s.close()
         raise e
 
@@ -68,30 +92,35 @@ def check():
     print('connecting to service %s network' % config.OTA["SSID"])
     blink()
     station = network.WLAN(network.STA_IF)
-    station.active(True)
-    station.connect(config.OTA["SSID"], config.OTA["password"])
-    blink()
-
-    for x in range(config.OTA["wifi_conn_timeout"]):
-        if station.isconnected():
-            print("connected to service wifi")
-            break
-        blink()
-        time.sleep(1)
-    else:
-        print("service wifi timeout. network not active or too slow, giving up")
-        blink()
-        return False
 
     try:
+        station.active(True)
+        station.connect(config.OTA["SSID"], config.OTA["password"])
+        blink()
+
+        for x in range(config.OTA["wifi_conn_timeout"]):
+            if station.isconnected():
+                print("connected to service wifi")
+                break
+            blink()
+            time.sleep(1)
+        else:
+            print("service wifi timeout. network not active or too slow, giving up")
+            blink()
+            return False
+
         # set ip to service ip
         ifconfig = station.ifconfig()
         station.ifconfig((config.OTA["bind_ip"], "255.255.255.0", ifconfig[2], ifconfig[3]))
         blink()
         return check_over_ip(config.OTA["node_type"])
     finally:
-        # set it back
-        station.ifconfig(ifconfig)
+        ## set it back
+        # station.ifconfig(ifconfig)
+        ## make station inactive
+        station.disconnect()
+        station.active(False)
+
 
 
 
@@ -101,7 +130,7 @@ def check_over_ip(node_type):
 
     try:
         resp = url_open("http://10.11.12.13:1415/%s/version.txt" % node_type)
-    except OSError:
+    except (OSError, CheckTimeoutError):
         blink("no version found")
         return False
 

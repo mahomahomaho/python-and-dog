@@ -17,7 +17,8 @@ adc = ADC(Pin(config.ADAC_PIN))
 while True:
     sleep(0.1)
     v = adc.read()/4096
-    print("v=", v)
-    servo.set(v)
-    # servo.speed((v - config.NEUTRAL_V)*(config.MAX_V - config.NEUTRAL_V))
+    vr = round(v, 1)
+    print("vr=", vr, "v=", v)
+    # servo.set(v)
+    servo.set(v - 0.5)
 
