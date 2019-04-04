@@ -1,30 +1,25 @@
 
-OTACLIDIR=../../micropython-OTA/otacli
 PORT=/dev/ttyUSB0
 export AMPY_PORT=$(PORT)
 
-install:
-	make -C .. download
-	make smallinstall
-	make otacliinst
+
+SRCS=main.py servo.py config.py config_local.py 
+UPTARGETS=$(patsubst %.py, .%.amput, $(SRCS)) \
+			../micropython-lib/logging/.logging.amput
+
+.%.amput: %.py
+	ampy put $<
+	touch $@
+
+install: $(UPTARGETS)
 
 minicom:
 	make install
 	minicom -D $(PORT)
 
-otacliinst: otacli.py
-	ampy put ../micropython-lib/utarfile/utarfile.py
-	ampy put ../micropython-lib/os.path/os/path.py ospath.py
-	ampy put otacli.py
+debug:
+	echo SRCS=$(SRCS)
+	echo MILSRCS=$(MILSRCS)
+	echo UPTARGETS=$(UPTARGETS)
 
-smallinstall:
-	ampy put main.py
-	ampy put servo.py
-	ampy put config.py
-	ampy put config_local.py
 
-otacli.py: $(OTACLIDIR)/otacli.py
-	cp $(OTACLIDIR)/otacli.py ./
-
-serve:
-	$(OTACLIDIR)/../otaserv/otaserv.sh
