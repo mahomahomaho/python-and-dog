@@ -1,13 +1,14 @@
-OTA = {'SSID': 'SSID', 
-       'password': 'wifipass',
-       'wifi_conn_timeout': 10,
-       'bind_ip': '10.11.12.1',
-       'node_type': 'dispenser'}
+WIFI = {'ap': {'ssid': 'dispenser',
+               'pass': 'dispenserpass',
+               # if set to None, no ip is set
+               'ip': None,
+               'dns': None},
 
-AP_SSID="dispenser"
-AP_PASS="dupadupa"
-AP_IP="192.168.4.10"
-AP_DNS='8.8.8.8'
+        'client': {'ssid': 'some_network',
+                   'pass': 'some_pass',
+                   # if set to None, no ip is set
+                   'ip': None,
+                   'dns': None}}
 
 SERVO_PIN = 19
 TURN_SPEED = 0.8

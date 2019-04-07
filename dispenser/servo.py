@@ -2,6 +2,7 @@ from random import random
 import machine
 import time
 
+
 class Servo:
     def __init__(self, pin_num):
         self.pin = machine.Pin(pin_num, machine.Pin.OUT)

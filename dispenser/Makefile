@@ -3,23 +3,28 @@ PORT=/dev/ttyUSB0
 export AMPY_PORT=$(PORT)
 
 
-SRCS=main.py servo.py config.py config_local.py 
-UPTARGETS=$(patsubst %.py, .%.amput, $(SRCS)) \
-			../micropython-lib/logging/.logging.amput
+SRCS=main.py servo.py config.py config_local.py conn.py
+UPTARGETS=$(patsubst %.py, .%.amput, $(SRCS))
+
+TPLS=templates/index.tpl
+TPLTARGETS=$(patsubst templates/%.tpl, templates/.%.tpl, $(TPLS))
 
 .%.amput: %.py
 	ampy put $<
 	touch $@
 
-install: $(UPTARGETS)
+.%.tpl: %.tpl
+	ampy mkdir --exists-okay $(shell dirname $<)
+	ampy put $< $<
+	touch $@
+
+install: $(UPTARGETS) $(TPLTARGETS)
+
+clean:
+	rm -vf $(UPTARGETS)
 
 minicom:
 	make install
 	minicom -D $(PORT)
 
-debug:
-	echo SRCS=$(SRCS)
-	echo MILSRCS=$(MILSRCS)
-	echo UPTARGETS=$(UPTARGETS)
-
-
+debug: $(TPLTARGETS)
