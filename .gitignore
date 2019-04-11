@@ -6,3 +6,4 @@ dispenser/otacli.py
 .buildozer
 __pycache__
 tags
+*.wput

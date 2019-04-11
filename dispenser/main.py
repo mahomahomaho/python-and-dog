@@ -58,4 +58,4 @@ def treat(req, resp):
     yield from picoweb.start_response(resp, status="303", headers=headers)
 
 
-app.run(host='0.0.0.0', debug=2)
+app.run(host='0.0.0.0', port=80, debug=2)
