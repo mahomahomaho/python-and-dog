@@ -11,8 +11,8 @@ WIFI = {'ap': {'ssid': 'dispenser',
                    'dns': None}}
 
 SERVO_PIN = 19
-TURN_SPEED = 0.3
-TURN_TIME = 2.3
+TURN_SPEED = 0.7
+SMALL_PORTION_TIME = 0.2
 
 LISTEN_PORT = 2477
 

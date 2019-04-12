@@ -12,12 +12,13 @@
     <title>Hello, world!</title>
   </head>
   <body>
-    <h1>Treat your dog v1</h1>
+    <h1>Treat your dog v2</h1>
 	<div class='container'>
             <form method="POST" action="/treat">
-                Press a 
-                    <button type="submit" class='btn btn-primary'>TREAT</button>
-                to treat a dog
+                Give reward to dog:
+                    <button type="submit" class='btn btn-primary' name='portion' value='1'>SMALL</button>
+                    <button type="submit" class='btn btn-primary' name='portion' value='2'>MEDIUM</button>
+                    <button type="submit" class='btn btn-primary' name='portion' value='3'>BIG</button>
             </form>
 
             <div class='row'>

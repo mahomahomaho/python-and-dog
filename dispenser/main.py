@@ -58,7 +58,6 @@ def clear_templates(req, resp):
         f = "templates/%s" % x
         os.unlink(f)
         logger.info("removed template %s", f)
-        machine.reboot()
     headers = {"Location": ".."}
     yield from picoweb.start_response(resp, status="303", headers=headers)
 
@@ -71,10 +70,15 @@ def treat(req, resp):
         logger.debug("method = %s, skipping", req.method)
         return
 
+    yield from req.read_form_data()
+
+    portion_size = float(req.form.get("portion", "2"))
+
     logger.debug("set speed to %s", config.TURN_SPEED)
     servo.speed(config.TURN_SPEED)
-    logger.debug("wait %s seconds", config.TURN_TIME)
-    yield from uasyncio.sleep(config.TURN_TIME)
+    sleeptime = portion_size * config.SMALL_PORTION_TIME
+    logger.debug("wait %s seconds", sleeptime)
+    yield from uasyncio.sleep(sleeptime)
     logger.debug("set speed to 0")
     servo.speed(0)
     logger.debug("done")
