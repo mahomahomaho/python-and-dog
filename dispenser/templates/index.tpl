@@ -15,10 +15,12 @@
     <h1>Treat your dog v2</h1>
 	<div class='container'>
             <form method="POST" action="/treat">
-                Give reward to dog:
-                    <button type="submit" class='btn btn-primary' name='portion' value='1'>SMALL</button>
-                    <button type="submit" class='btn btn-primary' name='portion' value='2'>MEDIUM</button>
-                    <button type="submit" class='btn btn-primary' name='portion' value='3'>BIG</button>
+                <div class='col-6'>
+                    Give reward to dog:
+                </div>
+                <button type="submit" class='btn btn-primary col-sm-12 col-lg-2' name='portion' value='1'>SMALL</button>
+                <button type="submit" class='btn btn-secondary col-sm-12 col-lg-2' name='portion' value='2'>MEDIUM</button>
+                <button type="submit" class='btn btn-primary col-sm-12 col-lg-2' name='portion' value='3'>BIG</button>
             </form>
 
             <div class='row'>
