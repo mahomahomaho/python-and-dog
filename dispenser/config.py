@@ -11,14 +11,17 @@ WIFI = {'ap': {'ssid': 'dispenser',
                    'dns': None}}
 
 SERVO_PIN = 19
-TURN_SPEED = 0.8
-TURN_TIME = 0.7
+TURN_SPEED = 0.3
+TURN_TIME = 2.3
 
 LISTEN_PORT = 2477
 
+VOLTAGE_PIN = 32  # acdc pin
+VOLTAGE_RATIO = 51 / 2  # because voltage divider has 51kOhms and 2kOhms
+
 try:
-    from config_local import *
-except:
+    from config_local import *   # noqa:
+except Exception:
     pass
 
 

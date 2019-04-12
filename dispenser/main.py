@@ -1,12 +1,10 @@
 import logging
-import network
 import machine
+import os
 import picoweb
 import uasyncio
-import usocket
-import time
+from machine import ADC, Pin
 
-from time import sleep
 from servo import Servo
 
 import config
@@ -25,12 +23,13 @@ def blink(msg=None, static={'v': 0}):
         print(msg)
 
 
-
 logging.basicConfig(level=logging.DEBUG)
 conn.init_wifi()
 
 logging.info("run servo")
 servo = Servo(config.SERVO_PIN)
+
+adc = ADC(Pin(config.VOLTAGE_PIN))
 
 
 app = picoweb.WebApp(__name__)
@@ -40,19 +39,45 @@ app = picoweb.WebApp(__name__)
 # 1 (True) debug logging
 # 2 extra debug logging
 
+
 @app.route("/")
 def index(req, resp):
+    global adc
+
+    voltage = adc.read() / 4096 * config.VOLTAGE_RATIO
+
     yield from picoweb.start_response(resp)
-    yield from app.render_template(resp, "index.tpl", (req,))
+    yield from app.render_template(resp, "index.tpl", (req, voltage))
+
+
+@app.route("/clear_templates")
+def clear_templates(req, resp):
+    for x in os.listdir("templates"):
+        if not x.endswith(".py"):
+            continue
+        f = "templates/%s" % x
+        os.unlink(f)
+        logger.info("removed template %s", f)
+        machine.reboot()
+    headers = {"Location": ".."}
+    yield from picoweb.start_response(resp, status="303", headers=headers)
 
 
 @app.route("/treat", method=["POST"])
 def treat(req, resp):
     global servo
-    
+
+    if req.method != "POST":
+        logger.debug("method = %s, skipping", req.method)
+        return
+
+    logger.debug("set speed to %s", config.TURN_SPEED)
     servo.speed(config.TURN_SPEED)
-    sleep(config.TURN_TIME)
+    logger.debug("wait %s seconds", config.TURN_TIME)
+    yield from uasyncio.sleep(config.TURN_TIME)
+    logger.debug("set speed to 0")
     servo.speed(0)
+    logger.debug("done")
 
     headers = {"Location": ".."}
     yield from picoweb.start_response(resp, status="303", headers=headers)

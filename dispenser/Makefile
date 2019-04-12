@@ -15,6 +15,7 @@ WTARGETS=$(patsubst %, %.wput, $(SRCS))
 
 
 install: $(WTARGETS)
+	http http://$(WEBREPL_ADDR)/clear_templates
 
 clean:
 	rm -vf $(WTARGETS)
