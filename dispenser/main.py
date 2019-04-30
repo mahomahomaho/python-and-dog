@@ -40,14 +40,20 @@ app = picoweb.WebApp(__name__)
 # 2 extra debug logging
 
 
+def voltage():
+    global adc
+    return adc.read() / 4096 * config.VOLTAGE_RATIO
+
+
+@app.route("/voltage")
+def get_voltage(req, resp):
+    yield from picoweb.jsonify(resp, {'voltage': voltage()})
+
+
 @app.route("/")
 def index(req, resp):
-    global adc
-
-    voltage = adc.read() / 4096 * config.VOLTAGE_RATIO
-
     yield from picoweb.start_response(resp)
-    yield from app.render_template(resp, "index.tpl", (req, voltage))
+    yield from app.render_template(resp, "index.tpl", (req, voltage()))
 
 
 @app.route("/clear_templates")

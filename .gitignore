@@ -7,3 +7,4 @@ dispenser/otacli.py
 __pycache__
 tags
 *.wput
+logs

@@ -1,6 +1,7 @@
-WEBREPL_ADDR=192.168.5.104
+WEBREPL_ADDR=192.168.5.114
 WEBREPL_PASSWORD=dupadupa
-WEBREPL=../../webrepl/webrepl_cli.py
+# WEBREPL=../../webrepl/webrepl_cli.py
+WEBREPL=webrepl-cli
 PORT=/dev/ttyUSB0
 export AMPY_PORT=$(PORT)
 
